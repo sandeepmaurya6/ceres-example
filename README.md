@@ -89,7 +89,5 @@ Every time you push to the `master` branch, GitHub Actions will:
 
 1. Run `npm run build`
 2. Upload the `dist/` folder
-   <<<<<<< HEAD
-3. # Publish it to your repository's GitHub Pages.
-4. Publish it to your repository's GitHub Pages.
-   > > > > > > > 7e16694110c487d39479d4efbf13974762f127fe
+3. Publish it to your repository's GitHub Pages.
+
