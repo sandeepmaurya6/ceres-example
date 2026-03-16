@@ -23,33 +23,43 @@ export function initDevBridge(): boolean {
     !templateParam.startsWith("http") &&
     !templateParam.includes("=")
   ) {
-    const tplName = templateParam;
-    console.log(
-      "Local Dev: Rewriting URL parameters to base64 for renderer compatibility..."
-    );
+    let isDecodingValid = false;
+    try {
+      const decoded = atob(templateParam);
+      if (decoded.includes("/") || decoded.includes(".json")) {
+        isDecodingValid = true;
+      }
+    } catch (e) {}
 
-    fetch(`./templates/${tplName}/manifest.json`)
-      .then((r) => {
-        if (!r.ok)
-          throw new Error("Could not load local manifest for " + tplName);
-        return r.json();
-      })
-      .then((manifest) => {
-        const fullPath =
-          window.location.origin +
-          window.location.pathname.replace("index.html", "") +
-          `templates/${tplName}/${manifest.version}/manifest.json`;
-        const newParams = new URLSearchParams(window.location.search);
-        newParams.set("template", btoa(fullPath));
-        window.location.replace(
-          window.location.pathname + "?" + newParams.toString()
-        );
-      })
-      .catch((e) => {
-        console.error("Pre-flight error:", e);
-      });
+    if (!isDecodingValid) {
+      const tplName = templateParam;
+      console.log(
+        "Local Dev: Rewriting URL parameters to base64 for renderer compatibility..."
+      );
 
-    return true; // Skip rendering
+      fetch(`./templates/${tplName}/manifest.json`)
+        .then((r) => {
+          if (!r.ok)
+            throw new Error("Could not load local manifest for " + tplName);
+          return r.json();
+        })
+        .then((manifest) => {
+          const fullPath =
+            window.location.origin +
+            window.location.pathname.replace("index.html", "") +
+            `templates/${tplName}/${manifest.version}/manifest.json`;
+          const newParams = new URLSearchParams(window.location.search);
+          newParams.set("template", btoa(fullPath));
+          window.location.replace(
+            window.location.pathname + "?" + newParams.toString()
+          );
+        })
+        .catch((e) => {
+          console.error("Pre-flight error:", e);
+        });
+
+      return true; // Skip rendering
+    }
   }
 
   // 3. Missing API URL -> Auto-load first sample
