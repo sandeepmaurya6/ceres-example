@@ -16,12 +16,22 @@ const OUTPUT_ELEMENT_ID = "documentOutput";
 const LYDIA_MODE_PARAM = "isLydiaMode";
 const DIBELLA_MODE_PARAM = "isDibellaMode";
 const DEBUG_STYLES_PARAM = "debugStyles";
+const DEBUG_MAPPING_PARAM = "debugMapping";
 
 const isLydiaMode = Boolean(getQueryParam(LYDIA_MODE_PARAM));
 const isDibellaMode = Boolean(getQueryParam(DIBELLA_MODE_PARAM));
 const isDevMode = Boolean(getQueryParam("devMode"));
 
 const shouldDebugStyles = getQueryParam(DEBUG_STYLES_PARAM) !== null;
+const shouldDebugMapping = getQueryParam(DEBUG_MAPPING_PARAM) !== null;
+
+const getTopLevelKeys = (value: unknown): string[] => {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return [];
+  }
+
+  return Object.keys(value as Record<string, unknown>).sort();
+};
 
 let shouldRender = true;
 if (isDevMode) {
@@ -103,6 +113,7 @@ const renderDocument = async () => {
       }
 
       const template = (window as any).CeresTemplate;
+      const mapper = (window as any).CeresTemplateDataMapper;
 
       if (typeof template !== "function") {
         throw new Error(
@@ -110,7 +121,18 @@ const renderDocument = async () => {
         );
       }
 
-      const html = template(payload);
+      const mappedPayload =
+        typeof mapper === "function" ? mapper(payload) : payload;
+
+      if (shouldDebugMapping) {
+        console.debug("[CeresMapping]", {
+          hasMapper: typeof mapper === "function",
+          sourceTopLevelKeys: getTopLevelKeys(payload),
+          mappedTopLevelKeys: getTopLevelKeys(mappedPayload),
+        });
+      }
+
+      const html = template(mappedPayload);
       if (outputDiv) {
         outputDiv.innerHTML = html;
         outputDiv.classList.remove("loading-message");

@@ -2,6 +2,7 @@
 
 // Import the full runtime (includes compiler-free helpers + partials support)
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const Handlebars = require("handlebars/dist/handlebars.runtime");
+const HandlebarsRuntime = require("handlebars/dist/handlebars.runtime");
 
-(window as any).Handlebars = Handlebars.default || Handlebars;
+(window as any).Handlebars =
+  HandlebarsRuntime.default || HandlebarsRuntime;

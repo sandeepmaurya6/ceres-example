@@ -1,306 +1,345 @@
 <div class="invoice-modern-shell">
-  <div class="no-dibella invoice-letterhead{{#unless letterHead}} is-empty{{/unless}}">
-    {{#if letterHead}}
-      <img src="{{letterHead}}" alt="Letterhead" data-ceres-height="letterhead" />
+  <div class="no-dibella invoice-letterhead{{#unless invoice.letterHead}} is-empty{{/unless}}">
+    {{#if invoice.letterHead}}
+      <img src="{{invoice.letterHead}}" alt="Letterhead" data-ceres-height="letterhead" />
     {{else}}
       <img alt="Letterhead" data-ceres-height="letterhead" />
     {{/if}}
   </div>
 
   <div class="invoice-modern-container">
-  <div class="invoice-header-modern">
-    <div class="logo-section">
-      <h1>{{ invoiceTitle }}</h1>
-      <p>For Professional Services</p>
-      <div style="margin-top:8px">{{> DemoBadge }}</div>
-    </div>
-  </div>
-
-  <div class="info-block-modern">
-    <div class="info-section invoice-details">
-      <h3>Invoice Details</h3>
-      <p>
-        <span class="meta-label">{{customLabels.invoiceNumber}}</span>
-        <strong>{{invoiceNumber}}</strong>
-      </p>
-      <p>
-        <span class="meta-label">{{customLabels.invoiceDate}}:</span>
-        {{formateShortDateWithOffset invoiceDate ownerOffset}}
-      </p>
-      <p>
-        <span class="meta-label">{{customLabels.dueDate}}:</span>
-        <strong>{{formateShortDateWithOffset dueDate ownerOffset}}</strong>
-      </p>
-      {{#if irn}}
-      {{#if irn.AckDt}}
-      <p>
-        <span class="meta-label">IRN Ack Date:</span>
-        {{formatDateInTimeZone irn.AckDt "UTC" "SECONDARY_SHORT_DATE_FORMAT"}}
-      </p>
-      {{/if}}
-      {{#if irn.CancelDate}}
-      <p>
-        <span class="meta-label">IRN Cancelled On:</span>
-        {{formateShortDateWithOffset irn.CancelDate ownerOffset}}
-      </p>
-      {{/if}}
-      {{#if irn.EwbDt}}
-      <p>
-        <span class="meta-label">E-Way Bill Date:</span>
-        {{formatDateInTimeZone irn.EwbDt "UTC" "SECONDARY_SHORT_DATE_FORMAT"}}
-      </p>
-      {{/if}}
-      {{#if irn.EwbValidTill}}
-      <p>
-        <span class="meta-label">E-Way Valid Till:</span>
-        {{formatDateInTimeZone irn.EwbValidTill "UTC" "SECONDARY_SHORT_DATE_FORMAT"}}
-      </p>
-      {{/if}}
-      {{#if irn.ewayCancelDate}}
-      <p>
-        <span class="meta-label">E-Way Cancelled On:</span>
-        {{formatDateInTimeZone irn.ewayCancelDate "UTC" "SECONDARY_SHORT_DATE_FORMAT"}}
-      </p>
-      {{/if}}
-      {{/if}}
-      {{!-- Status tag using the minimal InvoiceStatus widget --}}
-      <p>
-        <span class="meta-label">Status:</span>
-        {{> InvoiceStatus }}
-      </p>
-      {{#if purchaseOrderNumber}}
-      <p>
-        <span class="meta-label">{{customLabels.purchaseOrderNumber}}:</span>
-        {{purchaseOrderNumber}}
-      </p>
-      {{/if}}
-    </div>
-
-    <div class="info-section billed-by">
-      <h3>{{customLabels.billedBy}}</h3>
-      <p><strong>{{billedBy.name}}</strong></p>
-      <p>
-        {{billedBy.street}}<br />{{billedBy.city}}, {{billedBy.state}}
-        {{billedBy.pincode}}<br />{{billedBy.country}}
-      </p>
-      {{#if billedBy.vatNumber}}
-      <p>
-        <span class="vat-number-label">{{billedBy.vatLabel}}:</span>
-        {{billedBy.vatNumber}}
-      </p>
-      {{/if}}
-    </div>
-
-    <div class="info-section billed-to">
-      <h3>{{customLabels.billedTo}}</h3>
-      <p><strong>{{billedTo.name}}</strong></p>
-      <p>
-        {{billedTo.street}}<br />{{billedTo.city}}, {{billedTo.state}}
-        {{billedTo.pincode}}<br />{{billedTo.country}}
-      </p>
-      {{#if billedTo.gstin}}
-      <p>GSTIN: {{billedTo.gstin}}</p>
-      {{/if}}
-    </div>
-
-    {{#if transportDetails}}
-    <div class="info-section transport-details">
-      <h3>Transport</h3>
-      {{#if transportDetails.transport}}
-      <p>
-        <span class="meta-label">Mode:</span>
-        {{transportDetails.transport}}
-      </p>
-      {{/if}}
-      {{#if transportDetails.transportMode}}
-      <p>
-        <span class="meta-label">Transport Mode:</span>
-        {{transportDetails.transportMode}}
-      </p>
-      {{/if}}
-      {{#if transportDetails.challanNumber}}
-      <p>
-        <span class="meta-label">Challan No.:</span>
-        {{transportDetails.challanNumber}}
-      </p>
-      {{/if}}
-      {{#if transportDetails.challanDate}}
-      <p>
-        <span class="meta-label">Challan Date:</span>
-        {{formateDateWithOffset transportDetails.challanDate ownerOffset}}
-      </p>
-      {{/if}}
-      {{#if transportDetails.extraInformation}}
-      <p>
-        <span class="meta-label">Notes:</span>
-        {{transportDetails.extraInformation}}
-      </p>
-      {{/if}}
-    </div>
-    {{/if}}
-  </div>
-
-  <table class="item-table-modern">
-    <thead>
-      <tr>
-        <th class="description-col">Service Description</th>
-        <th class="text-right">QTY</th>
-        <th class="text-right">Rate</th>
-        <th class="text-right">VAT Rate</th>
-        <th class="text-right">Amount</th>
-        <th class="text-right">VAT</th>
-        <th class="text-right">Total</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each items}}
-      <tr>
-        <td>
-          <span class="item-name">{{name}}</span>
-          {{#if sku}}<span class="item-sku"> (SKU: {{sku}})</span>{{/if}}
-          {{#if description}}
-            <br />
-            <div class="item-desc">
-              {{> MarkdownViewer (prepareMarkdownViewerData description) }}
-            </div>
-          {{/if}}
-        </td>
-        <td class="text-right">{{quantity}}</td>
-        <td class="text-right">{{rate}}</td>
-        <td class="text-right">{{gstRate}}%</td>
-        <td class="text-right">{{amount}}</td>
-        <td class="text-right">{{igst}}</td>
-        <td class="text-right"><strong>{{total}}</strong></td>
-      </tr>
-      {{/each}}
-    </tbody>
-  </table>
-
-  <div class="totals-full-width-section">
-    <div class="total-line">
-      <span class="label">{{customLabels.subTotal}}:</span>
-      <span class="value">{{totals.subTotal}}</span>
-    </div>
-    {{#if totals.discount}}
-    <div class="total-line">
-      <span class="label">Discount:</span>
-      <span class="value">- {{totals.discount}}</span>
-    </div>
-    {{/if}}
-    {{#if totals.igst}}
-    <div class="total-line">
-      <span class="label">IGST:</span>
-      <span class="value">{{totals.igst}}</span>
-    </div>
-    {{/if}}
-    {{#if totals.cgst}}
-    <div class="total-line">
-      <span class="label">CGST:</span>
-      <span class="value">{{totals.cgst}}</span>
-    </div>
-    {{/if}}
-    {{#if totals.sgst}}
-    <div class="total-line">
-      <span class="label">SGST:</span>
-      <span class="value">{{totals.sgst}}</span>
-    </div>
-    {{/if}}
-    {{#if totals.amountRoundOff}}
-    <div class="total-line">
-      <span class="label">Amount Round Off:</span>
-      <span class="value">{{totals.amountRoundOff}}</span>
-    </div>
-    {{/if}}
-    {{#if totals.totalRoundOff}}
-    <div class="total-line">
-      <span class="label">Total Round Off:</span>
-      <span class="value">{{totals.totalRoundOff}}</span>
-    </div>
-    {{/if}}
-    <div class="total-line grand">
-      <span class="label">{{customLabels.total}}:</span>
-      <span class="value">{{totals.total}}</span>
-    </div>
-    {{#if latePaymentFee}}
-    {{#if dueDate}}
-    {{#if latePaymentFee.showInInvoice}}
-    {{#if latePaymentFee.enabled}}
-    {{#unless latePaymentFee.isApplied}}
-    <div class="total-line late-fee">
-      <span class="label">Late Payment Fee:</span>
-      <span class="value">
-        {{#if latePaymentFee.finalAmount}}Additional {{latePaymentFee.finalAmount}} {{/if}}
-        {{#if latePaymentFee.when}}
-          after {{formatDateAddDays dueDate latePaymentFee.when ownerOffset}}
+    <div class="invoice-header-modern">
+      <div class="logo-section">
+        <h1>{{invoice.invoiceTitle}}</h1>
+        {{#if invoice.invoiceSubTitle}}
+          <p>{{invoice.invoiceSubTitle}}</p>
         {{/if}}
-      </span>
-    </div>
-    {{/unless}}
-    {{/if}}
-    {{/if}}
-    {{/if}}
-    {{/if}}
-    <div class="total-in-words">
-      <span>{{customLabels.totalInWords}}:</span>
-      <span>{{customLabels.totalInWordsValue}}</span>
-    </div>
-  </div>
+        <div style="margin-top:8px">{{> DemoBadge }}</div>
+      </div>
 
-  {{#if allPayments.length}}
-  <div class="payments-section">
-    <h3>Payments</h3>
+      {{#if mapped.qr.top}}
+        <div class="info-section invoice-details">
+          <h3>Document QR</h3>
+          <img src="{{mapped.qr.top}}" alt="Document QR" style="max-width:120px" />
+        </div>
+      {{/if}}
+    </div>
+
+    <div class="info-block-modern">
+      <div class="info-section invoice-details">
+        <h3>Invoice Details</h3>
+        <p>
+          <span class="meta-label">
+            {{#if invoice.customLabels.invoiceNumber}}{{invoice.customLabels.invoiceNumber}}{{else}}Invoice No{{/if}}
+          </span>
+          <strong>{{invoice.invoiceNumber}}</strong>
+        </p>
+        <p>
+          <span class="meta-label">
+            {{#if invoice.customLabels.invoiceDate}}{{invoice.customLabels.invoiceDate}}{{else}}Invoice Date{{/if}}:
+          </span>
+          {{formateShortDateWithOffset invoice.invoiceDate invoice.ownerOffset}}
+        </p>
+        {{#if invoice.dueDate}}
+          <p>
+            <span class="meta-label">
+              {{#if invoice.customLabels.dueDate}}{{invoice.customLabels.dueDate}}{{else}}Due Date{{/if}}:
+            </span>
+            <strong>{{formateShortDateWithOffset invoice.dueDate invoice.ownerOffset}}</strong>
+          </p>
+        {{/if}}
+        {{#if invoice.purchaseOrderNumber}}
+          <p>
+            <span class="meta-label">
+              {{#if invoice.customLabels.purchaseOrderNumber}}{{invoice.customLabels.purchaseOrderNumber}}{{else}}PO No{{/if}}:
+            </span>
+            {{invoice.purchaseOrderNumber}}
+          </p>
+        {{/if}}
+        {{#if invoice.irn.AckDt}}
+          <p>
+            <span class="meta-label">IRN Ack Date:</span>
+            {{formatDateInTimeZone invoice.irn.AckDt "UTC" "SECONDARY_SHORT_DATE_FORMAT"}}
+          </p>
+        {{/if}}
+        {{#if invoice.irn.CancelDate}}
+          <p>
+            <span class="meta-label">IRN Cancelled On:</span>
+            {{formateShortDateWithOffset invoice.irn.CancelDate invoice.ownerOffset}}
+          </p>
+        {{/if}}
+        {{#if invoice.irn.EwbDt}}
+          <p>
+            <span class="meta-label">E-Way Bill Date:</span>
+            {{formatDateInTimeZone invoice.irn.EwbDt "UTC" "SECONDARY_SHORT_DATE_FORMAT"}}
+          </p>
+        {{/if}}
+        {{#if invoice.irn.EwbValidTill}}
+          <p>
+            <span class="meta-label">E-Way Valid Till:</span>
+            {{formatDateInTimeZone invoice.irn.EwbValidTill "UTC" "SECONDARY_SHORT_DATE_FORMAT"}}
+          </p>
+        {{/if}}
+        <p>
+          <span class="meta-label">Status:</span>
+          {{> InvoiceStatus invoice }}
+        </p>
+      </div>
+
+      <div class="info-section billed-by">
+        <h3>{{#if invoice.customLabels.billedBy}}{{invoice.customLabels.billedBy}}{{else}}Billed By{{/if}}</h3>
+        <p><strong>{{invoice.billedBy.name}}</strong></p>
+        <p>
+          {{invoice.billedBy.street}}<br />{{invoice.billedBy.city}}, {{invoice.billedBy.state}}
+          {{invoice.billedBy.pincode}}<br />{{invoice.billedBy.country}}
+        </p>
+        {{#if invoice.billedBy.gstin}}
+          <p>
+            <span class="vat-number-label">GSTIN:</span>
+            {{invoice.billedBy.gstin}}
+          </p>
+        {{/if}}
+      </div>
+
+      <div class="info-section billed-to">
+        <h3>{{#if invoice.customLabels.billedTo}}{{invoice.customLabels.billedTo}}{{else}}Billed To{{/if}}</h3>
+        <p><strong>{{invoice.billedTo.name}}</strong></p>
+        <p>
+          {{invoice.billedTo.street}}<br />{{invoice.billedTo.city}}, {{invoice.billedTo.state}}
+          {{invoice.billedTo.pincode}}<br />{{invoice.billedTo.country}}
+        </p>
+        {{#if invoice.billedTo.gstin}}
+          <p>GSTIN: {{invoice.billedTo.gstin}}</p>
+        {{/if}}
+      </div>
+
+      {{#if mapped.visibility.shippedTo}}
+        <div class="info-section billed-to">
+          <h3>{{#if invoice.customLabels.shippedTo}}{{invoice.customLabels.shippedTo}}{{else}}Shipped To{{/if}}</h3>
+          <p><strong>{{invoice.shippedTo.name}}</strong></p>
+          <p>
+            {{invoice.shippedTo.street}}<br />{{invoice.shippedTo.city}}, {{invoice.shippedTo.state}}
+            {{invoice.shippedTo.pincode}}<br />{{invoice.shippedTo.country}}
+          </p>
+        </div>
+      {{/if}}
+
+      {{#if mapped.visibility.showLogistics}}
+        <div class="info-section transport-details">
+          <h3>Transport</h3>
+          {{#if invoice.transportDetails.transporter.name}}
+            <p>
+              <span class="meta-label">
+                {{#if invoice.customLabels.transportName}}{{invoice.customLabels.transportName}}{{else}}Transport Name{{/if}}:
+              </span>
+              {{invoice.transportDetails.transporter.name}}
+            </p>
+          {{/if}}
+          {{#if invoice.transportDetails.transportMode}}
+            <p>
+              <span class="meta-label">Transport Mode:</span>
+              {{invoice.transportDetails.transportMode}}
+            </p>
+          {{/if}}
+          {{#if invoice.transportDetails.challanNumber}}
+            <p>
+              <span class="meta-label">
+                {{#if invoice.customLabels.challanNumber}}{{invoice.customLabels.challanNumber}}{{else}}Challan No{{/if}}:
+              </span>
+              {{invoice.transportDetails.challanNumber}}
+            </p>
+          {{/if}}
+          {{#if invoice.transportDetails.challanDate}}
+            <p>
+              <span class="meta-label">
+                {{#if invoice.customLabels.challanDate}}{{invoice.customLabels.challanDate}}{{else}}Challan Date{{/if}}:
+              </span>
+              {{formateDateWithOffset invoice.transportDetails.challanDate invoice.ownerOffset}}
+            </p>
+          {{/if}}
+          {{#if invoice.transportDetails.extraInformation}}
+            <p>
+              <span class="meta-label">
+                {{#if invoice.customLabels.transportExtraInfo}}{{invoice.customLabels.transportExtraInfo}}{{else}}Notes{{/if}}:
+              </span>
+              {{invoice.transportDetails.extraInformation}}
+            </p>
+          {{/if}}
+        </div>
+      {{/if}}
+    </div>
+
     <table class="item-table-modern">
       <thead>
         <tr>
-          <th>Date</th>
-          <th>Mode</th>
+          <th class="description-col">Service Description</th>
+          {{#if derived.showHsnColumn}}<th>HSN/SAC</th>{{/if}}
+          <th class="text-right">QTY</th>
+          <th class="text-right">Rate</th>
           <th class="text-right">Amount</th>
-          <th class="text-right">Status</th>
+          {{#if mapped.visibility.showIgst}}<th class="text-right">IGST</th>{{/if}}
+          {{#if mapped.visibility.showCgstSgst}}<th class="text-right">CGST</th><th class="text-right">SGST</th>{{/if}}
+          <th class="text-right">Total</th>
         </tr>
       </thead>
       <tbody>
-        {{#each allPayments}}
-        <tr>
-          <td>{{formateShortDateWithOffset paymentDate ../ownerOffset}}</td>
-          <td>{{paymentMethod}}</td>
-          <td class="text-right">{{amount}}</td>
-          <td class="text-right">{{status}}</td>
-        </tr>
+        {{#each invoice.items}}
+          <tr>
+            <td>
+              <span class="item-name">{{name}}</span>
+              {{#if ../advanceOptions.showSkuInInvoice}}{{#if sku}}<span class="item-sku"> (SKU: {{sku}})</span>{{/if}}{{/if}}
+              {{#if ../derived.showInlineHsn}}{{#if hsn}}<span class="item-sku"> (HSN/SAC: {{hsn}})</span>{{/if}}{{/if}}
+              {{#if description}}
+                <br />
+                <div class="item-desc">
+                  {{> MarkdownViewer (prepareMarkdownViewerData description) }}
+                </div>
+              {{/if}}
+            </td>
+            {{#if ../derived.showHsnColumn}}<td>{{hsn}}</td>{{/if}}
+            <td class="text-right">{{quantity}}</td>
+            <td class="text-right">{{../invoice.customCurrencySymbol}}{{rate}}</td>
+            <td class="text-right">{{../invoice.customCurrencySymbol}}{{amount}}</td>
+            {{#if ../mapped.visibility.showIgst}}<td class="text-right">{{../invoice.customCurrencySymbol}}{{igst}}</td>{{/if}}
+            {{#if ../mapped.visibility.showCgstSgst}}<td class="text-right">{{../invoice.customCurrencySymbol}}{{cgst}}</td><td class="text-right">{{../invoice.customCurrencySymbol}}{{sgst}}</td>{{/if}}
+            <td class="text-right"><strong>{{../invoice.customCurrencySymbol}}{{subTotal}}</strong></td>
+          </tr>
         {{/each}}
       </tbody>
     </table>
-  </div>
-  {{/if}}
 
-  <div class="notes-terms-modern-section">
-    {{#if notes}}
-    <div class="notes-modern-block">
-      <h3>{{customLabels.notes}}</h3>
-      {{> MarkdownViewer (prepareMarkdownViewerData notes) }}
+    <div class="totals-full-width-section">
+      <div class="total-line">
+        <span class="label">{{#if invoice.customLabels.subTotal}}{{invoice.customLabels.subTotal}}{{else}}Sub Total{{/if}}:</span>
+        <span class="value">{{invoice.customCurrencySymbol}}{{#if invoice.finalTotal.subTotal}}{{invoice.finalTotal.subTotal}}{{else}}{{invoice.subTotal}}{{/if}}</span>
+      </div>
+      {{#if invoice.finalTotal.discount}}
+        <div class="total-line">
+          <span class="label">Discount:</span>
+          <span class="value">- {{invoice.customCurrencySymbol}}{{invoice.finalTotal.discount}}</span>
+        </div>
+      {{/if}}
+      {{#if invoice.finalTotal.igst}}
+        <div class="total-line">
+          <span class="label">IGST:</span>
+          <span class="value">{{invoice.customCurrencySymbol}}{{invoice.finalTotal.igst}}</span>
+        </div>
+      {{/if}}
+      {{#if invoice.finalTotal.cgst}}
+        <div class="total-line">
+          <span class="label">CGST:</span>
+          <span class="value">{{invoice.customCurrencySymbol}}{{invoice.finalTotal.cgst}}</span>
+        </div>
+      {{/if}}
+      {{#if invoice.finalTotal.sgst}}
+        <div class="total-line">
+          <span class="label">{{#if mapped.visibility.isUtgst}}UTGST{{else}}SGST{{/if}}:</span>
+          <span class="value">{{invoice.customCurrencySymbol}}{{invoice.finalTotal.sgst}}</span>
+        </div>
+      {{/if}}
+      <div class="total-line grand">
+        <span class="label">{{#if invoice.customLabels.total}}{{invoice.customLabels.total}}{{else}}Total{{/if}}:</span>
+        <span class="value">{{invoice.customCurrencySymbol}}{{invoice.finalTotal.total}}</span>
+      </div>
+      {{#if invoice.latePaymentFee}}
+        {{#if invoice.dueDate}}
+          {{#if invoice.latePaymentFee.showInInvoice}}
+            {{#if invoice.latePaymentFee.enabled}}
+              {{#unless invoice.latePaymentFee.isApplied}}
+                <div class="total-line late-fee">
+                  <span class="label">Late Payment Fee:</span>
+                  <span class="value">
+                    {{#if invoice.latePaymentFee.finalAmount}}Additional {{invoice.customCurrencySymbol}}{{invoice.latePaymentFee.finalAmount}} {{/if}}
+                    {{#if invoice.latePaymentFee.when}}
+                      after {{formatDateAddDays invoice.dueDate invoice.latePaymentFee.when invoice.ownerOffset}}
+                    {{/if}}
+                  </span>
+                </div>
+              {{/unless}}
+            {{/if}}
+          {{/if}}
+        {{/if}}
+      {{/if}}
+      {{#if invoice.customLabels.totalInWordsValue}}
+        <div class="total-in-words">
+          <span>{{#if invoice.customLabels.totalInWords}}{{invoice.customLabels.totalInWords}}{{else}}Total (in words){{/if}}:</span>
+          <span>{{invoice.customLabels.totalInWordsValue}}</span>
+        </div>
+      {{/if}}
     </div>
+
+    {{#if invoice.allPayments.length}}
+      <div class="payments-section">
+        <h3>Payments</h3>
+        <table class="item-table-modern">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Mode</th>
+              <th class="text-right">Amount</th>
+              <th class="text-right">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each invoice.allPayments}}
+              <tr>
+                <td>{{formateShortDateWithOffset paymentDate ../invoice.ownerOffset}}</td>
+                <td>{{paymentMethod}}</td>
+                <td class="text-right">{{../invoice.customCurrencySymbol}}{{amount}}</td>
+                <td class="text-right">{{status}}</td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
     {{/if}}
-    {{#if terms.0.terms.length}}
-    <div class="terms-modern-block">
-      <h3>{{customLabels.terms}}</h3>
-      <ul>
-        {{#each terms.0.terms}}
-        <li>{{this}}</li>
-        {{/each}}
-      </ul>
+
+    <div class="notes-terms-modern-section">
+      {{#if invoice.notes}}
+        <div class="notes-modern-block">
+          <h3>{{#if invoice.customLabels.notes}}{{invoice.customLabels.notes}}{{else}}Notes{{/if}}</h3>
+          {{> MarkdownViewer (prepareMarkdownViewerData invoice.notes) }}
+        </div>
+      {{/if}}
+      {{#if invoice.terms.0.terms.length}}
+        <div class="terms-modern-block">
+          <h3>{{#if invoice.customLabels.terms}}{{invoice.customLabels.terms}}{{else}}Terms and Conditions{{/if}}</h3>
+          <ul>
+            {{#each invoice.terms.0.terms}}
+              <li>{{this}}</li>
+            {{/each}}
+          </ul>
+        </div>
+      {{/if}}
     </div>
+
+    {{#if mapped.visibility.contactStrip}}
+      <div class="invoice-footer-modern">
+        <p>
+          {{#if invoice.contact.email}}
+            {{#if invoice.customLabels.contactEmail}}{{invoice.customLabels.contactEmail}}{{else}}email at{{/if}}
+            <strong>{{invoice.contact.email}}</strong>
+          {{/if}}
+          {{#if invoice.contact.phone}}
+            {{#if invoice.contact.email}}, {{/if}}
+            {{#if invoice.customLabels.contactPhone}}{{invoice.customLabels.contactPhone}}{{else}}call on{{/if}}
+            <strong>{{invoice.contact.phone}}</strong>
+          {{/if}}
+        </p>
+        <p>&copy; 2025 {{invoice.billedBy.name}}. All rights reserved.</p>
+        <p>Powered by Refrens.com</p>
+      </div>
+    {{else}}
+      <div class="invoice-footer-modern">
+        <p>&copy; 2025 {{invoice.billedBy.name}}. All rights reserved.</p>
+        <p>Powered by Refrens.com</p>
+      </div>
     {{/if}}
   </div>
 
-  <div class="invoice-footer-modern">
-    <p>&copy; 2025 {{billedBy.name}}. All rights reserved.</p>
-    <p>Powered by Refrens.com</p>
-  </div>
-
-  </div>
-
-  <div class="no-dibella invoice-letterhead-footer{{#unless letterHeadFooter}} is-empty{{/unless}}">
-    {{#if letterHeadFooter}}
-      <img src="{{letterHeadFooter}}" alt="Letterhead footer" data-ceres-height="letterhead-footer" />
+  <div class="no-dibella invoice-letterhead-footer{{#unless invoice.letterHeadFooter}} is-empty{{/unless}}">
+    {{#if invoice.letterHeadFooter}}
+      <img src="{{invoice.letterHeadFooter}}" alt="Letterhead footer" data-ceres-height="letterhead-footer" />
     {{else}}
       <img alt="Letterhead footer" data-ceres-height="letterhead-footer" />
     {{/if}}
