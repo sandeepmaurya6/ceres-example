@@ -4,10 +4,11 @@ A self-contained, forkable sandbox for independently building, testing, and depl
 
 This repository is designed specifically for independent creators, designers, and frontend devs. It provides everything you need to build custom invoice, quotation, and document templates without relying on the core Ceres repository.
 
-**Important Setup:**
-If the automated deployment fails on your first push, ensure GitHub Pages is enabled:
-1. Go to your repository **Settings → Pages**.
-2. Under "Build and deployment", set the **Source** to **GitHub Actions**.
+> [!IMPORTANT]
+> If the automated deployment fails on your first push, ensure GitHub Pages is enabled:
+>
+> 1. Go to your repository **Settings → Pages**.
+> 2. Under **Build and deployment**, set the **Source** to **GitHub Actions**.
 
 ## Features
 
@@ -35,6 +36,7 @@ npm install
 By default, the repository comes with an `example-template`. You can duplicate the folder `src/templates/example-template` to start a new design.
 
 Each template folder requires four core files:
+
 - `template.hbs`: The Handlebars HTML structure.
 - `styles.css`: The styling for your document.
 - `index.ts`: Entrypoint exporting `window.CeresTemplate`.
@@ -58,16 +60,21 @@ npx http-server ./dist -p 8081
 Because Ceres relies on dynamically fetching data, the `ceres-example` UI comes with a floating **DevBridge Modal** in the bottom-right corner.
 
 ### Loading a Template
+
 1. In the **Load Template** field, type your folder name (e.g., `example-template`).
 2. Click **Load**. The page will reload and fetch your template's manifest.
 
 ### Injecting API Data
+
 By default, the renderer will stall at "Trying to load document..." if it lacks payload data.
+
 1. Paste an external sample API URL (or a local JSON server URL) into the **API URL Settings** field.
 2. Click **Load API**. The URL will be base64-encoded via URL parameters and the template will immediately render your data.
 
 ### Exporting for Lydia
+
 Once you are happy with the design and it works flawlessly on localhost, you need to point Lydia to your published bundle:
+
 1. Ensure your changes are deployed to GitHub pages.
 2. Enter the absolute URL of your published Template in the modal.
 3. The **Template Path** field will present the raw, unencoded path. Click **Copy** and drop this manifest URL directly into Lydia!
@@ -76,9 +83,13 @@ Once you are happy with the design and it works flawlessly on localhost, you nee
 
 ## ☁️ Deployment (GitHub Pages)
 
-This repository includes a pre-configured GitHub Actions workflow (`.github/workflows/deploy.yml`). 
+This repository includes a pre-configured GitHub Actions workflow (`.github/workflows/deploy.yml`).
 
 Every time you push to the `master` branch, GitHub Actions will:
+
 1. Run `npm run build`
 2. Upload the `dist/` folder
-3. Publish it to your repository's GitHub Pages.
+   <<<<<<< HEAD
+3. # Publish it to your repository's GitHub Pages.
+4. Publish it to your repository's GitHub Pages.
+   > > > > > > > 7e16694110c487d39479d4efbf13974762f127fe
