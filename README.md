@@ -20,6 +20,23 @@ This repository is designed specifically for independent creators, designers, an
 
 ---
 
+## 📄 Included Templates
+
+### `default-template`
+A modern, full-featured invoice template with a colorful gradient totals section, grid-based info blocks, and a polished card-style layout. Great as a starting point for commercial invoices.
+
+### `advocate-bill`
+A formal, traditional bill template designed for legal professionals and advocates. Features:
+- **Serif typography** (Cormorant Garamond headings, Libre Baskerville body) for a classic legal document feel
+- Centered header with name, title, and qualifications
+- Reference number and date row
+- Clean two-column bill table (Description / Amount)
+- Total with amount in words
+- Signature area with right-aligned bank details
+- Contact footer with address, phone, and email
+
+---
+
 ## 🚀 Getting Started
 
 ### 1. Installation
@@ -33,7 +50,7 @@ npm install
 
 ### 2. Scaffold a Template
 
-By default, the repository comes with an `example-template`. You can duplicate the folder `src/templates/example-template` to start a new design.
+The repository comes with `default-template` and `advocate-bill`. You can duplicate either folder under `src/templates/` to start a new design.
 
 Each template folder requires four core files:
 
