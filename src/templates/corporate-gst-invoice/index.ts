@@ -8,6 +8,13 @@ import "../../widgets/demo-badge";
 import "../../widgets/date-time";
 import "../../widgets/markdown-viewer";
 
+// Register custom helpers
+declare const Handlebars: any;
+Handlebars.registerHelper("increment", function (value: number) {
+  return value + 1;
+});
+
 // Export template to global for main renderer to consume
 window.CeresTemplateDataMapper = normalizeInvoiceTemplateState as any;
 window.CeresTemplate = template;
+
