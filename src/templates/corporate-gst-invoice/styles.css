@@ -83,7 +83,7 @@
 
 /* ===== COMMON HELPERS ===== */
 .corp-label {
-  font-size: 12px;
+  font-size: 20px;
   color: var(--corp-text-light);
   display: block;
   margin-bottom: 2px;
