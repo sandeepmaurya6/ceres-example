@@ -177,7 +177,9 @@
 .aw-val {
   font-weight: 700;
   color: var(--aw-text);
-  white-space: nowrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
 }
 
 /* ===== META CARD KV GRID ===== */
@@ -254,6 +256,7 @@
 
 .aw-item-table tbody td {
   padding: 4px 8px;
+  border-top: 1px solid var(--aw-border-dark);
   border-bottom: 1px solid var(--aw-border-dark);
   border-left: 1px solid var(--aw-muted);
   border-right: 1px solid var(--aw-muted);
@@ -262,11 +265,11 @@
 }
 
 .aw-item-table tbody td:first-child {
-  border-left: none;
+  border-left: 1px solid var(--aw-border-dark);
 }
 
 .aw-item-table tbody td:last-child {
-  border-right: none;
+  border-right: 1px solid var(--aw-border-dark);
 }
 
 .aw-item-table tfoot td {
@@ -277,8 +280,8 @@
   line-height: 1.6;
 }
 
-.aw-tfoot-row td:first-child { border-left: none; }
-.aw-tfoot-row td:last-child { border-right: none; }
+.aw-tfoot-row td:first-child { border-left: 1px solid var(--aw-text); }
+.aw-tfoot-row td:last-child { border-right: 1px solid var(--aw-text); }
 
 .item-name {
   font-weight: 700;
